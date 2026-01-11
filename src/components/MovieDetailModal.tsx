@@ -247,7 +247,8 @@ export function MovieDetailModal({
                         movieRating: movie.rating.toString(),
                         movieDuration: movie.duration,
                         movieDescription: movie.description,
-                        theatreName: 'Sahara Cinema'
+                        theatreName: 'Sahara Cinema',
+                        trailerUrl: movie.trailerUrl
                       }
                     });
                     onClose();
