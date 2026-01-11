@@ -244,6 +244,7 @@ export function MovieDetailModal({
                         showtime: selectedTime,
                         date: `${availableDates[selectedDateIndex]?.label}, ${availableDates[selectedDateIndex]?.day} ${availableDates[selectedDateIndex]?.month}`,
                         moviePoster: movie.image,
+                        movieBackdrop: movie.backdrop,
                         movieRating: movie.rating.toString(),
                         movieDuration: movie.duration,
                         movieDescription: movie.description,

@@ -69,6 +69,7 @@ export default function SeatSelectionPage() {
     showtime = '18:00', 
     date = 'Today',
     moviePoster,
+    movieBackdrop,
     movieRating = '8.1',
     movieDuration = '1h 55min',
     movieDescription = 'Experience the ultimate cinema adventure.',
@@ -208,13 +209,13 @@ export default function SeatSelectionPage() {
     <div className="min-h-screen bg-white">
       {/* Hero Movie Header */}
       <div className="relative h-48 sm:h-64 lg:h-80 overflow-hidden">
-        {/* Background Image with Gradient Overlay */}
+        {/* Background Image with Gradient Overlay - Use backdrop for widescreen fit */}
         <div 
           className="absolute inset-0"
           style={{
-            backgroundImage: moviePoster ? `url(${moviePoster})` : 'none',
+            backgroundImage: (movieBackdrop || moviePoster) ? `url(${movieBackdrop || moviePoster})` : 'none',
             backgroundSize: 'cover',
-            backgroundPosition: 'center top',
+            backgroundPosition: 'center',
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-white" />
