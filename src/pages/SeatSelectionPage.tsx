@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ChevronLeft, Play } from 'lucide-react';
+import { ChevronLeft, Play, X } from 'lucide-react';
 import { BookingConfirmation } from '@/components/BookingConfirmation';
 import { BookingSuccess } from '@/components/BookingSuccess';
 import { useAuth } from '@/contexts/AuthContext';
@@ -195,33 +195,43 @@ export default function SeatSelectionPage() {
     navigate(-1);
   };
 
+  const [showTrailer, setShowTrailer] = useState(false);
+  const movieTrailerUrl = location.state?.trailerUrl || '';
+
+  // Extract YouTube video ID from URL
+  const getYouTubeEmbedUrl = (url: string) => {
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/);
+    return match ? `https://www.youtube.com/embed/${match[1]}?autoplay=1` : '';
+  };
+
   return (
     <div className="min-h-screen bg-white">
-      {/* Background Image */}
-      {moviePoster && (
+      {/* Hero Movie Header */}
+      <div className="relative h-48 sm:h-64 lg:h-80 overflow-hidden">
+        {/* Background Image with Gradient Overlay */}
         <div 
-          className="fixed inset-0 opacity-5 pointer-events-none"
+          className="absolute inset-0"
           style={{
-            backgroundImage: `url(${moviePoster})`,
+            backgroundImage: moviePoster ? `url(${moviePoster})` : 'none',
             backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            backgroundPosition: 'center top',
           }}
         />
-      )}
-      
-      <div className="relative min-h-screen flex flex-col">
-        {/* Header */}
-        <header className="flex items-center justify-between px-4 sm:px-8 py-4 border-b border-gray-200 bg-white/95 backdrop-blur-sm sticky top-0 z-50">
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-white" />
+        <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-transparent to-white/80" />
+        
+        {/* Header Navigation */}
+        <header className="relative flex items-center justify-between px-4 sm:px-8 py-4 z-10">
           <button 
             onClick={handleClose}
-            className="flex items-center gap-2 text-gray-800 hover:text-gray-600 transition-colors"
+            className="flex items-center gap-2 text-gray-800 hover:text-gray-600 transition-colors bg-white/80 backdrop-blur-sm px-3 py-2 rounded-lg"
           >
             <ChevronLeft className="w-5 h-5" />
             <span className="font-medium">BACK</span>
           </button>
           
           {/* Progress Steps */}
-          <div className="hidden sm:flex items-center gap-8">
+          <div className="hidden sm:flex items-center gap-8 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-lg">
             <div className="flex items-center gap-2 text-gray-400">
               <span className="text-sm">01 Overview</span>
             </div>
@@ -240,21 +250,23 @@ export default function SeatSelectionPage() {
             </div>
           </div>
           
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-3 py-2 rounded-lg">
             <span className="text-gray-700 hidden sm:block">Hi, {user ? 'User' : 'Guest'}</span>
             <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
               <span className="text-gray-500 text-sm">?</span>
             </div>
           </div>
         </header>
+      </div>
 
+      <div className="relative flex flex-col lg:flex-row">
         {/* Main Content */}
         <div className="flex-1 flex overflow-hidden">
           {/* Left Side - Seat Selection */}
           <div className="flex-1 overflow-y-auto p-4 sm:p-8 pb-32 lg:pb-8">
             {/* Movie Info */}
             <div className="mb-6">
-              <div className="flex items-center gap-4 mb-2">
+              <div className="flex flex-wrap items-center gap-4 mb-2">
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{movieTitle}</h1>
                 <span className="px-2 py-1 bg-yellow-400 text-yellow-900 text-xs font-bold rounded">IMDb {movieRating}</span>
                 <span className="text-gray-500 text-sm">⏱ {movieDuration}</span>
@@ -376,22 +388,36 @@ export default function SeatSelectionPage() {
 
           {/* Right Sidebar */}
           <div className="hidden lg:flex w-80 border-l border-gray-200 flex-col bg-white p-6">
-            {/* Movie Poster */}
+            {/* Movie Poster with Trailer Button */}
             {moviePoster && (
               <div className="relative mb-6">
-                <img 
-                  src={moviePoster} 
-                  alt={movieTitle}
-                  className="w-full h-64 object-cover rounded-lg shadow-lg"
-                />
-                <button className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-lg opacity-0 hover:opacity-100 transition-opacity">
-                  <div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center">
-                    <Play className="w-8 h-8 text-white fill-white ml-1" />
-                  </div>
-                </button>
-                <p className="text-center text-blue-500 text-sm mt-2 cursor-pointer hover:underline">
+                <div className="relative rounded-xl overflow-hidden shadow-xl">
+                  <img 
+                    src={moviePoster} 
+                    alt={movieTitle}
+                    className="w-full h-72 object-cover"
+                  />
+                  {/* Play Button Overlay */}
+                  <motion.button 
+                    onClick={() => setShowTrailer(true)}
+                    className="absolute inset-0 flex items-center justify-center bg-black/40 hover:bg-black/50 transition-colors cursor-pointer"
+                    whileHover={{ scale: 1.02 }}
+                  >
+                    <motion.div 
+                      className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center shadow-lg"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <Play className="w-8 h-8 text-white fill-white ml-1" />
+                    </motion.div>
+                  </motion.button>
+                </div>
+                <button 
+                  onClick={() => setShowTrailer(true)}
+                  className="w-full text-center text-cyan-500 text-sm mt-3 cursor-pointer hover:underline font-medium tracking-wide"
+                >
                   WATCH TRAILER
-                </p>
+                </button>
               </div>
             )}
             
@@ -484,10 +510,40 @@ export default function SeatSelectionPage() {
                 : 'bg-gray-200 text-gray-400 cursor-not-allowed'
             }`}
           >
-            Add to cart
+            Confirm Seat
           </motion.button>
         </div>
       </div>
+
+      {/* Trailer Modal */}
+      {showTrailer && movieTrailerUrl && (
+        <motion.div 
+          className="fixed inset-0 z-[120] flex items-center justify-center p-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <div className="absolute inset-0 bg-black/95" onClick={() => setShowTrailer(false)} />
+          <motion.div 
+            className="relative w-full max-w-4xl aspect-video bg-black rounded-xl overflow-hidden"
+            initial={{ scale: 0.9 }}
+            animate={{ scale: 1 }}
+          >
+            <button 
+              onClick={() => setShowTrailer(false)}
+              className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <iframe
+              src={getYouTubeEmbedUrl(movieTrailerUrl)}
+              className="w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </motion.div>
+        </motion.div>
+      )}
 
       {/* Booking Confirmation Modal */}
       <BookingConfirmation
