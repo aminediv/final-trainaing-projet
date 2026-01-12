@@ -182,9 +182,10 @@ export function Navbar() {
           ) : (
             <button 
               onClick={() => navigate('/auth')}
-              className="w-10 h-10 rounded-full bg-secondary/80 flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-primary/25"
             >
               <User className="w-4 h-4" />
+              <span className="hidden sm:inline">Sign In</span>
             </button>
           )}
 
