@@ -23,6 +23,7 @@ export default {
         cinema: ['Bebas Neue', 'sans-serif'],
         ephesis: ['Ephesis', 'cursive'],
         waterfall: ['Waterfall', 'cursive'],
+        stalemate: ['Stalemate', 'cursive'],
       },
       colors: {
         border: "rgb(var(--border))",

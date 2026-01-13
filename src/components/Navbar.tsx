@@ -85,7 +85,7 @@ export function Navbar() {
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className={`flex items-center transition-all duration-300 ${
+        <Link to="/" className={`flex flex-col items-start transition-all duration-300 ${
           isScrolled ? '-ml-2 md:-ml-4 -mt-1' : '-ml-4 md:-ml-8 -mt-2 md:-mt-3'
         }`}>
           <img 
@@ -97,6 +97,11 @@ export function Navbar() {
                 : 'h-24 md:h-32 lg:h-36'
             }`}
           />
+          <span className={`font-stalemate text-sahara-orange transition-all duration-300 ${
+            isScrolled ? 'text-sm md:text-base -mt-2 ml-2' : 'text-base md:text-xl -mt-4 md:-mt-6 ml-3 md:ml-4'
+          }`}>
+            by Mohamed amine aglif
+          </span>
         </Link>
 
         {/* Center: Navigation */}
