@@ -98,7 +98,7 @@ export function Navbar() {
             }`}
           />
           <span className={`font-stalemate text-sahara-orange transition-all duration-300 ${
-            isScrolled ? 'text-lg md:text-xl -mt-2 ml-2' : 'text-xl md:text-3xl -mt-4 md:-mt-6 ml-3 md:ml-4'
+            isScrolled ? 'text-base -mt-4 ml-2' : 'text-lg md:text-2xl -mt-6 md:-mt-8 ml-3 md:ml-4'
           }`}>
             by Mohamed amine aglif
           </span>
