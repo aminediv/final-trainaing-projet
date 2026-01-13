@@ -7,7 +7,6 @@ import { BookingSuccess } from '@/components/BookingSuccess';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-
 export interface Seat {
   id: string;
   row: string;
@@ -16,25 +15,20 @@ export interface Seat {
   price: number;
   isLoveBox?: boolean;
 }
-
 const generateSeats = (): Seat[][] => {
   const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
   const seatsPerRow = [14, 14, 16, 16, 16, 16, 16, 16, 14, 12];
-  
   return rows.map((row, rowIndex) => {
     const seats: Seat[] = [];
     const count = seatsPerRow[rowIndex];
     const isVipRow = rowIndex <= 1;
     const isLoveBoxRow = rowIndex >= 3 && rowIndex <= 4;
-    
     for (let i = 1; i <= count; i++) {
       const isOccupied = Math.random() < 0.2;
       const isCenterSeat = i >= Math.floor(count / 2) - 2 && i <= Math.floor(count / 2) + 2;
       const isLoveBox = isLoveBoxRow && isCenterSeat && i % 2 === 0;
-      
       let status: Seat['status'] = 'available';
       let price = 80;
-      
       if (isOccupied) {
         status = 'occupied';
       } else if (isVipRow) {
@@ -44,29 +38,29 @@ const generateSeats = (): Seat[][] => {
         status = 'lovebox';
         price = 200;
       }
-      
       seats.push({
         id: `${row}${i}`,
         row,
         number: i,
         status,
         price,
-        isLoveBox,
+        isLoveBox
       });
     }
     return seats;
   });
 };
-
 export default function SeatSelectionPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuth();
-  
+  const {
+    user
+  } = useAuth();
+
   // Get movie data from navigation state
-  const { 
-    movieTitle = 'Movie Title', 
-    showtime = '18:00', 
+  const {
+    movieTitle = 'Movie Title',
+    showtime = '18:00',
     date = 'Today',
     moviePoster,
     movieBackdrop,
@@ -75,7 +69,6 @@ export default function SeatSelectionPage() {
     movieDescription = 'Experience the ultimate cinema adventure.',
     theatreName = 'Sahara Cinema'
   } = location.state || {};
-
   const [seats] = useState<Seat[][]>(generateSeats);
   const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -83,10 +76,8 @@ export default function SeatSelectionPage() {
   const [confirmationNumber, setConfirmationNumber] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [timeLeft, setTimeLeft] = useState(600);
-
   useEffect(() => {
     if (timeLeft <= 0) return;
-    
     const timer = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
@@ -98,16 +89,13 @@ export default function SeatSelectionPage() {
         return prev - 1;
       });
     }, 1000);
-    
     return () => clearInterval(timer);
   }, [timeLeft, navigate]);
-
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
-  
   const generateConfirmationNumber = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let result = 'SAH-';
@@ -116,10 +104,8 @@ export default function SeatSelectionPage() {
     }
     return result;
   };
-
   const handleSeatClick = (seat: Seat) => {
     if (seat.status === 'occupied') return;
-    
     const isSelected = selectedSeats.find(s => s.id === seat.id);
     if (isSelected) {
       setSelectedSeats(selectedSeats.filter(s => s.id !== seat.id));
@@ -127,10 +113,8 @@ export default function SeatSelectionPage() {
       setSelectedSeats([...selectedSeats, seat]);
     }
   };
-
   const getSeatStyle = (seat: Seat) => {
     const isSelected = selectedSeats.find(s => s.id === seat.id);
-    
     if (isSelected) {
       return 'bg-blue-500 border-blue-600 shadow-lg shadow-blue-500/30';
     }
@@ -145,30 +129,25 @@ export default function SeatSelectionPage() {
     }
     return 'bg-gray-400 border-gray-500 hover:bg-gray-300 cursor-pointer';
   };
-
   const totalPrice = selectedSeats.reduce((sum, seat) => sum + seat.price, 0);
-  
   const regularSeats = selectedSeats.filter(s => s.status !== 'vip' && s.status !== 'lovebox');
   const vipSeats = selectedSeats.filter(s => s.status === 'vip');
   const loveBoxSeats = selectedSeats.filter(s => s.status === 'lovebox');
-
   const saveBooking = async (bookingCode: string) => {
     if (!user) return;
-    
     setIsSaving(true);
     try {
-      const { error } = await supabase
-        .from('bookings')
-        .insert({
-          user_id: user.id,
-          movie_title: movieTitle,
-          show_date: date,
-          show_time: showtime,
-          selected_seats: selectedSeats.map(s => s.id),
-          total_price: totalPrice,
-          booking_code: bookingCode,
-        });
-
+      const {
+        error
+      } = await supabase.from('bookings').insert({
+        user_id: user.id,
+        movie_title: movieTitle,
+        show_date: date,
+        show_time: showtime,
+        selected_seats: selectedSeats.map(s => s.id),
+        total_price: totalPrice,
+        booking_code: bookingCode
+      });
       if (error) throw error;
     } catch (error) {
       console.error('Error saving booking:', error);
@@ -177,25 +156,21 @@ export default function SeatSelectionPage() {
       setIsSaving(false);
     }
   };
-
   const handleConfirmBooking = async () => {
     if (!user) {
       toast.error('Please sign in to book tickets');
       navigate('/auth');
       return;
     }
-    
     const newConfirmation = generateConfirmationNumber();
     setConfirmationNumber(newConfirmation);
     await saveBooking(newConfirmation);
     setShowConfirmation(false);
     setShowSuccess(true);
   };
-
   const handleClose = () => {
     navigate(-1);
   };
-
   const [showTrailer, setShowTrailer] = useState(false);
   const movieTrailerUrl = location.state?.trailerUrl || '';
 
@@ -204,29 +179,21 @@ export default function SeatSelectionPage() {
     const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/);
     return match ? `https://www.youtube.com/embed/${match[1]}?autoplay=1` : '';
   };
-
-  return (
-    <div className="min-h-screen bg-white">
+  return <div className="min-h-screen bg-white">
       {/* Hero Movie Header */}
       <div className="relative h-48 sm:h-64 lg:h-80 overflow-hidden">
         {/* Background Image with Gradient Overlay - Use backdrop for widescreen fit */}
-        <div 
-          className="absolute inset-0"
-          style={{
-            backgroundImage: (movieBackdrop || moviePoster) ? `url(${movieBackdrop || moviePoster})` : 'none',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        />
+        <div className="absolute inset-0" style={{
+        backgroundImage: movieBackdrop || moviePoster ? `url(${movieBackdrop || moviePoster})` : 'none',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
+      }} />
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-white" />
         <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-transparent to-white/80" />
         
         {/* Header Navigation */}
         <header className="relative flex items-center justify-between px-4 sm:px-8 py-4 z-10">
-          <button 
-            onClick={handleClose}
-            className="flex items-center gap-2 text-gray-800 hover:text-gray-600 transition-colors bg-white/80 backdrop-blur-sm px-3 py-2 rounded-lg"
-          >
+          <button onClick={handleClose} className="flex items-center gap-2 text-gray-800 hover:text-gray-600 transition-colors bg-white/80 backdrop-blur-sm px-3 py-2 rounded-lg">
             <ChevronLeft className="w-5 h-5" />
             <span className="font-medium">BACK</span>
           </button>
@@ -314,49 +281,35 @@ export default function SeatSelectionPage() {
             {/* Screen */}
             <div className="relative mb-8">
               <svg viewBox="0 0 400 30" className="w-full max-w-2xl mx-auto">
-                <path
-                  d="M 10 25 Q 200 0 390 25"
-                  fill="none"
-                  stroke="#ef4444"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                />
+                <path d="M 10 25 Q 200 0 390 25" fill="none" stroke="#ef4444" strokeWidth="3" strokeLinecap="round" />
               </svg>
               <p className="text-center text-gray-400 text-sm tracking-[0.3em] mt-2">SCREEN</p>
             </div>
 
             {/* Seats Grid */}
             <div className="flex flex-col items-center gap-1 mb-8 overflow-x-auto">
-              {seats.map((row, rowIndex) => (
-                <div key={rowIndex} className="flex items-center gap-1 min-w-max">
+              {seats.map((row, rowIndex) => <div key={rowIndex} className="flex items-center gap-1 min-w-max">
                   <span className="w-6 text-center text-gray-400 text-sm font-medium">
                     {row[0]?.row}
                   </span>
                   
                   <div className="flex gap-0.5">
                     {row.map((seat, seatIndex) => {
-                      const hasGapBefore = seatIndex === Math.floor(row.length / 2);
-                      
-                      return (
-                        <div key={seat.id} className={`flex ${hasGapBefore ? 'ml-4' : ''}`}>
-                          <motion.button
-                            onClick={() => handleSeatClick(seat)}
-                            disabled={seat.status === 'occupied'}
-                            className={`w-5 h-5 sm:w-6 sm:h-6 rounded-sm border text-[8px] font-medium transition-all ${getSeatStyle(seat)}`}
-                            whileHover={seat.status !== 'occupied' ? { scale: 1.1 } : {}}
-                            whileTap={seat.status !== 'occupied' ? { scale: 0.95 } : {}}
-                            title={`${seat.id} - ${seat.price} MAD`}
-                          />
-                        </div>
-                      );
-                    })}
+                  const hasGapBefore = seatIndex === Math.floor(row.length / 2);
+                  return <div key={seat.id} className={`flex ${hasGapBefore ? 'ml-4' : ''}`}>
+                          <motion.button onClick={() => handleSeatClick(seat)} disabled={seat.status === 'occupied'} className={`w-5 h-5 sm:w-6 sm:h-6 rounded-sm border text-[8px] font-medium transition-all ${getSeatStyle(seat)}`} whileHover={seat.status !== 'occupied' ? {
+                      scale: 1.1
+                    } : {}} whileTap={seat.status !== 'occupied' ? {
+                      scale: 0.95
+                    } : {}} title={`${seat.id} - ${seat.price} MAD`} />
+                        </div>;
+                })}
                   </div>
                   
                   <span className="w-6 text-center text-gray-400 text-sm font-medium">
                     {row[0]?.row}
                   </span>
-                </div>
-              ))}
+                </div>)}
             </div>
 
             {/* Bottom Legend */}
@@ -390,75 +343,55 @@ export default function SeatSelectionPage() {
           {/* Right Sidebar */}
           <div className="hidden lg:flex w-80 border-l border-gray-200 flex-col bg-white p-6">
             {/* Movie Poster with Trailer Button */}
-            {moviePoster && (
-              <div className="relative mb-6">
+            {moviePoster && <div className="relative mb-6">
                 <div className="relative rounded-xl overflow-hidden shadow-xl">
-                  <img 
-                    src={moviePoster} 
-                    alt={movieTitle}
-                    className="w-full h-72 object-cover"
-                  />
+                  <img src={moviePoster} alt={movieTitle} className="w-full h-72 object-cover" />
                   {/* Play Button Overlay */}
-                  <motion.button 
-                    onClick={() => setShowTrailer(true)}
-                    className="absolute inset-0 flex items-center justify-center bg-black/40 hover:bg-black/50 transition-colors cursor-pointer"
-                    whileHover={{ scale: 1.02 }}
-                  >
-                    <motion.div 
-                      className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center shadow-lg"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
+                  <motion.button onClick={() => setShowTrailer(true)} className="absolute inset-0 flex items-center justify-center bg-black/40 hover:bg-black/50 transition-colors cursor-pointer" whileHover={{
+                scale: 1.02
+              }}>
+                    <motion.div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center shadow-lg" whileHover={{
+                  scale: 1.1
+                }} whileTap={{
+                  scale: 0.95
+                }}>
                       <Play className="w-8 h-8 text-white fill-white ml-1" />
                     </motion.div>
                   </motion.button>
                 </div>
-                <button 
-                  onClick={() => setShowTrailer(true)}
-                  className="w-full text-center text-cyan-500 text-sm mt-3 cursor-pointer hover:underline font-medium tracking-wide"
-                >
+                <button onClick={() => setShowTrailer(true)} className="w-full text-center text-cyan-500 text-sm mt-3 cursor-pointer hover:underline font-medium tracking-wide">
                   WATCH TRAILER
                 </button>
-              </div>
-            )}
+              </div>}
             
             {/* Your Seats Summary */}
             <div className="flex-1">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">Your Seats</h3>
               
-              {selectedSeats.length === 0 ? (
-                <p className="text-gray-400 text-sm">No seats selected</p>
-              ) : (
-                <div className="space-y-3">
-                  {regularSeats.length > 0 && (
-                    <div className="flex items-center justify-between">
+              {selectedSeats.length === 0 ? <p className="text-gray-400 text-sm">No seats selected</p> : <div className="space-y-3">
+                  {regularSeats.length > 0 && <div className="flex items-center justify-between">
                       <span className="text-gray-700">Regular</span>
                       <div className="flex items-center gap-4">
                         <span className="text-gray-500">{regularSeats.length}</span>
                         <span className="font-semibold text-gray-800">{regularSeats.reduce((s, seat) => s + seat.price, 0)} MAD</span>
                       </div>
-                    </div>
-                  )}
+                    </div>}
                   
-                  {loveBoxSeats.length > 0 && (
-                    <div className="flex items-center justify-between">
+                  {loveBoxSeats.length > 0 && <div className="flex items-center justify-between">
                       <span className="text-gray-700">Love Box</span>
                       <div className="flex items-center gap-4">
                         <span className="text-gray-500">{loveBoxSeats.length}</span>
                         <span className="font-semibold text-gray-800">{loveBoxSeats.reduce((s, seat) => s + seat.price, 0)} MAD</span>
                       </div>
-                    </div>
-                  )}
+                    </div>}
                   
-                  {vipSeats.length > 0 && (
-                    <div className="flex items-center justify-between">
+                  {vipSeats.length > 0 && <div className="flex items-center justify-between">
                       <span className="text-gray-700">VIP</span>
                       <div className="flex items-center gap-4">
                         <span className="text-gray-500">{vipSeats.length}</span>
                         <span className="font-semibold text-gray-800">{vipSeats.reduce((s, seat) => s + seat.price, 0)} MAD</span>
                       </div>
-                    </div>
-                  )}
+                    </div>}
                   
                   <div className="border-t border-gray-200 pt-3 mt-4">
                     <div className="flex items-center justify-between">
@@ -470,22 +403,15 @@ export default function SeatSelectionPage() {
                   <div className="pt-2">
                     <p className="text-gray-400 text-xs mb-2">Selected: {selectedSeats.map(s => s.id).join(', ')}</p>
                   </div>
-                </div>
-              )}
+                </div>}
             </div>
             
             {/* Add to Cart Button */}
-            <motion.button
-              onClick={() => selectedSeats.length > 0 && setShowConfirmation(true)}
-              disabled={selectedSeats.length === 0}
-              className={`w-full py-4 rounded-lg font-semibold text-lg transition-all ${
-                selectedSeats.length > 0 
-                  ? 'bg-red-500 text-white hover:bg-red-600 shadow-lg' 
-                  : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-              }`}
-              whileHover={selectedSeats.length > 0 ? { scale: 1.02 } : {}}
-              whileTap={selectedSeats.length > 0 ? { scale: 0.98 } : {}}
-            >
+            <motion.button onClick={() => selectedSeats.length > 0 && setShowConfirmation(true)} disabled={selectedSeats.length === 0} className={`w-full py-4 rounded-lg font-semibold text-lg transition-all ${selectedSeats.length > 0 ? 'bg-red-500 text-white hover:bg-red-600 shadow-lg' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`} whileHover={selectedSeats.length > 0 ? {
+            scale: 1.02
+          } : {}} whileTap={selectedSeats.length > 0 ? {
+            scale: 0.98
+          } : {}}>
               Add to cart
             </motion.button>
           </div>
@@ -498,85 +424,46 @@ export default function SeatSelectionPage() {
               <p className="text-gray-500 text-sm">{selectedSeats.length} seat(s) selected</p>
               <p className="text-xl font-bold text-gray-900">{totalPrice} MAD</p>
             </div>
-            <span className={`font-bold ${timeLeft < 60 ? 'text-red-500' : 'text-green-500'}`}>
-              {formatTime(timeLeft)}
-            </span>
+            
           </div>
-          <motion.button
-            onClick={() => selectedSeats.length > 0 && setShowConfirmation(true)}
-            disabled={selectedSeats.length === 0}
-            className={`w-full py-3 rounded-lg font-semibold transition-all ${
-              selectedSeats.length > 0 
-                ? 'bg-red-500 text-white hover:bg-red-600' 
-                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-            }`}
-          >
+          <motion.button onClick={() => selectedSeats.length > 0 && setShowConfirmation(true)} disabled={selectedSeats.length === 0} className={`w-full py-3 rounded-lg font-semibold transition-all ${selectedSeats.length > 0 ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}>
             Confirm Seat
           </motion.button>
         </div>
       </div>
 
       {/* Trailer Modal */}
-      {showTrailer && movieTrailerUrl && (
-        <motion.div 
-          className="fixed inset-0 z-[120] flex items-center justify-center p-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
+      {showTrailer && movieTrailerUrl && <motion.div className="fixed inset-0 z-[120] flex items-center justify-center p-4" initial={{
+      opacity: 0
+    }} animate={{
+      opacity: 1
+    }} exit={{
+      opacity: 0
+    }}>
           <div className="absolute inset-0 bg-black/95" onClick={() => setShowTrailer(false)} />
-          <motion.div 
-            className="relative w-full max-w-4xl aspect-video bg-black rounded-xl overflow-hidden"
-            initial={{ scale: 0.9 }}
-            animate={{ scale: 1 }}
-          >
-            <button 
-              onClick={() => setShowTrailer(false)}
-              className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-colors"
-            >
+          <motion.div className="relative w-full max-w-4xl aspect-video bg-black rounded-xl overflow-hidden" initial={{
+        scale: 0.9
+      }} animate={{
+        scale: 1
+      }}>
+            <button onClick={() => setShowTrailer(false)} className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-colors">
               <X className="w-5 h-5" />
             </button>
-            <iframe
-              src={getYouTubeEmbedUrl(movieTrailerUrl)}
-              className="w-full h-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
+            <iframe src={getYouTubeEmbedUrl(movieTrailerUrl)} className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
           </motion.div>
-        </motion.div>
-      )}
+        </motion.div>}
 
       {/* Booking Confirmation Modal */}
-      <BookingConfirmation
-        isOpen={showConfirmation}
-        onClose={() => {
-          setShowConfirmation(false);
-          handleClose();
-        }}
-        onBack={() => setShowConfirmation(false)}
-        onConfirm={handleConfirmBooking}
-        movieTitle={movieTitle}
-        showtime={showtime}
-        date={date}
-        selectedSeats={selectedSeats}
-        totalPrice={totalPrice}
-      />
+      <BookingConfirmation isOpen={showConfirmation} onClose={() => {
+      setShowConfirmation(false);
+      handleClose();
+    }} onBack={() => setShowConfirmation(false)} onConfirm={handleConfirmBooking} movieTitle={movieTitle} showtime={showtime} date={date} selectedSeats={selectedSeats} totalPrice={totalPrice} />
 
       {/* Booking Success Modal */}
-      <BookingSuccess
-        isOpen={showSuccess}
-        onClose={() => {
-          setShowSuccess(false);
-          setSelectedSeats([]);
-          navigate('/');
-        }}
-        movieTitle={movieTitle}
-        showtime={showtime}
-        date={date}
-        selectedSeats={selectedSeats}
-        totalPrice={totalPrice}
-        confirmationNumber={confirmationNumber}
-      />
-    </div>
-  );
+      <BookingSuccess isOpen={showSuccess} onClose={() => {
+      setShowSuccess(false);
+      setSelectedSeats([]);
+      navigate('/');
+    }} movieTitle={movieTitle} showtime={showtime} date={date} selectedSeats={selectedSeats} totalPrice={totalPrice} confirmationNumber={confirmationNumber} />
+    </div>;
 }
