@@ -75,27 +75,6 @@ export default function SeatSelectionPage() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [confirmationNumber, setConfirmationNumber] = useState('');
   const [isSaving, setIsSaving] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(600);
-  useEffect(() => {
-    if (timeLeft <= 0) return;
-    const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          toast.error('Session expired. Please try again.');
-          navigate(-1);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [timeLeft, navigate]);
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
   const generateConfirmationNumber = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let result = 'SAH-';
@@ -329,13 +308,6 @@ export default function SeatSelectionPage() {
                   </div>
                   <span className="text-gray-600 text-sm">VIP</span>
                 </div>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                <span className="text-gray-500 text-sm">TIME LEFT</span>
-                <span className={`text-xl font-bold ${timeLeft < 60 ? 'text-red-500' : 'text-green-500'}`}>
-                  {formatTime(timeLeft)}
-                </span>
               </div>
             </div>
           </div>
