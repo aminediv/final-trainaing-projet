@@ -90,34 +90,8 @@ export function SeatSelection({
   const [showSuccess, setShowSuccess] = useState(false);
   const [confirmationNumber, setConfirmationNumber] = useState('');
   const [isSaving, setIsSaving] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(600); // 10 minutes countdown
   const { user } = useAuth();
   const navigate = useNavigate();
-
-  // Countdown timer
-  useEffect(() => {
-    if (!isOpen || timeLeft <= 0) return;
-    
-    const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          toast.error('Session expired. Please try again.');
-          onClose();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    
-    return () => clearInterval(timer);
-  }, [isOpen, timeLeft, onClose]);
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
   
   const generateConfirmationNumber = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -368,7 +342,7 @@ export function SeatSelection({
               </div>
 
               {/* Bottom Legend */}
-              <div className="flex items-center justify-between border-t border-gray-200 pt-4">
+              <div className="flex items-center justify-center border-t border-gray-200 pt-4">
                 <div className="flex items-center gap-6">
                   <div className="flex items-center gap-2">
                     <div className="w-5 h-5 bg-gray-400 border border-gray-500 rounded-sm" />
@@ -384,13 +358,6 @@ export function SeatSelection({
                     </div>
                     <span className="text-gray-600 text-sm">VIP</span>
                   </div>
-                </div>
-                
-                <div className="flex items-center gap-2">
-                  <span className="text-gray-500 text-sm">TIME LEFT</span>
-                  <span className={`text-xl font-bold ${timeLeft < 60 ? 'text-red-500' : 'text-green-500'}`}>
-                    {formatTime(timeLeft)}
-                  </span>
                 </div>
               </div>
             </div>
@@ -493,9 +460,6 @@ export function SeatSelection({
                 <p className="text-gray-500 text-sm">{selectedSeats.length} seat(s) selected</p>
                 <p className="text-xl font-bold text-gray-900">{totalPrice} MAD</p>
               </div>
-              <span className={`font-bold ${timeLeft < 60 ? 'text-red-500' : 'text-green-500'}`}>
-                {formatTime(timeLeft)}
-              </span>
             </div>
             <motion.button
               onClick={() => selectedSeats.length > 0 && setShowConfirmation(true)}
