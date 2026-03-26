@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Ticket, MapPin, Clock, Calendar, CreditCard, CheckCircle } from 'lucide-react';
+import { X, Ticket, MapPin, Clock, Calendar, CreditCard, CheckCircle, Lock } from 'lucide-react';
 
 interface Seat {
   id: string;
@@ -31,10 +32,28 @@ export function BookingConfirmation({
   selectedSeats,
   totalPrice
 }: BookingConfirmationProps) {
+  const [cardNumber, setCardNumber] = useState('');
+  const [expiry, setExpiry] = useState('');
+  const [cvv, setCvv] = useState('');
+  const [cardName, setCardName] = useState('');
+
   if (!isOpen) return null;
 
   const serviceFee = Math.round(totalPrice * 0.05);
   const grandTotal = totalPrice + serviceFee;
+
+  const formatCardNumber = (value: string) => {
+    const digits = value.replace(/\D/g, '').slice(0, 16);
+    return digits.replace(/(.{4})/g, '$1 ').trim();
+  };
+
+  const formatExpiry = (value: string) => {
+    const digits = value.replace(/\D/g, '').slice(0, 4);
+    if (digits.length >= 3) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+    return digits;
+  };
+
+  const isFormValid = cardNumber.replace(/\s/g, '').length === 16 && expiry.length === 5 && cvv.length >= 3 && cardName.length > 0;
 
   return (
     <motion.div 
