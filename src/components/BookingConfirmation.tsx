@@ -170,6 +170,63 @@ export function BookingConfirmation({
               </div>
             </div>
           </div>
+
+          {/* Payment Information */}
+          <div className="bg-white/5 rounded-xl p-3 border border-white/10">
+            <div className="flex items-center gap-2 mb-3">
+              <Lock className="w-3.5 h-3.5 text-green-400" />
+              <span className="text-xs font-medium text-white">Payment Information</span>
+              <span className="ml-auto text-[10px] text-green-400/70 flex items-center gap-1">
+                <Lock className="w-2.5 h-2.5" /> Secure
+              </span>
+            </div>
+            
+            <div className="space-y-2">
+              <div>
+                <label className="text-[10px] text-white/50 mb-1 block">Cardholder Name</label>
+                <input
+                  type="text"
+                  placeholder="John Doe"
+                  value={cardName}
+                  onChange={(e) => setCardName(e.target.value)}
+                  className="w-full bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-white/30 transition-colors"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] text-white/50 mb-1 block">Card Number</label>
+                <input
+                  type="text"
+                  placeholder="1234 5678 9012 3456"
+                  value={cardNumber}
+                  onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
+                  className="w-full bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-white/30 transition-colors font-mono tracking-wider"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-white/50 mb-1 block">Expiry Date</label>
+                  <input
+                    type="text"
+                    placeholder="MM/YY"
+                    value={expiry}
+                    onChange={(e) => setExpiry(formatExpiry(e.target.value))}
+                    className="w-full bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-white/30 transition-colors font-mono"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] text-white/50 mb-1 block">CVV</label>
+                  <input
+                    type="password"
+                    placeholder="•••"
+                    value={cvv}
+                    maxLength={4}
+                    onChange={(e) => setCvv(e.target.value.replace(/\D/g, ''))}
+                    className="w-full bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-white/30 transition-colors font-mono"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Action Buttons */}
@@ -184,9 +241,14 @@ export function BookingConfirmation({
           </motion.button>
           <motion.button
             onClick={onConfirm}
-            className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white text-sm font-semibold shadow-lg transition-colors flex items-center justify-center gap-2"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            disabled={!isFormValid}
+            className={`flex-1 py-2.5 rounded-xl text-white text-sm font-semibold shadow-lg transition-colors flex items-center justify-center gap-2 ${
+              isFormValid 
+                ? 'bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600' 
+                : 'bg-white/10 cursor-not-allowed opacity-50'
+            }`}
+            whileHover={isFormValid ? { scale: 1.02 } : {}}
+            whileTap={isFormValid ? { scale: 0.98 } : {}}
           >
             <CreditCard className="w-4 h-4" />
             Pay {grandTotal} MAD
