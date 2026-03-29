@@ -39,6 +39,15 @@ export function BookingConfirmation({
 
   if (!isOpen) return null;
 
+  const getCardType = (number: string) => {
+    const digits = number.replace(/\s/g, '');
+    if (/^4/.test(digits)) return 'visa';
+    if (/^5[1-5]/.test(digits) || /^2[2-7]/.test(digits)) return 'mastercard';
+    return null;
+  };
+
+  const cardType = getCardType(cardNumber);
+
   const serviceFee = Math.round(totalPrice * 0.05);
   const grandTotal = totalPrice + serviceFee;
 
