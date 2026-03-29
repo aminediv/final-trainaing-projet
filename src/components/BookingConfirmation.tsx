@@ -203,13 +203,23 @@ export function BookingConfirmation({
               </div>
               <div>
                 <label className="text-[10px] text-white/50 mb-1 block">Card Number</label>
-                <input
-                  type="text"
-                  placeholder="1234 5678 9012 3456"
-                  value={cardNumber}
-                  onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
-                  className="w-full bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-white/30 transition-colors font-mono tracking-wider"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="1234 5678 9012 3456"
+                    value={cardNumber}
+                    onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
+                    className="w-full bg-white/10 border border-white/10 rounded-lg px-3 py-2 pr-16 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-white/30 transition-colors font-mono tracking-wider"
+                  />
+                  <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
+                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded transition-opacity ${cardType === 'visa' ? 'bg-blue-600 text-white opacity-100' : 'bg-white/10 text-white/30 opacity-60'}`}>
+                      VISA
+                    </span>
+                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded transition-opacity ${cardType === 'mastercard' ? 'bg-orange-600 text-white opacity-100' : 'bg-white/10 text-white/30 opacity-60'}`}>
+                      MC
+                    </span>
+                  </div>
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
