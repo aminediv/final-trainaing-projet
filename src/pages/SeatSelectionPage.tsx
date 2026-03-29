@@ -291,25 +291,6 @@ export default function SeatSelectionPage() {
                 </div>)}
             </div>
 
-            {/* Bottom Legend */}
-            <div className="flex items-center justify-between border-t border-gray-200 pt-4">
-              <div className="flex items-center gap-6">
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 bg-gray-400 border border-gray-500 rounded-sm" />
-                  <span className="text-gray-600 text-sm">Regular Seats</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-5 bg-gradient-to-b from-gray-700 to-gray-800 border border-gray-600 rounded-lg" />
-                  <span className="text-gray-600 text-sm">Love Box</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 bg-gradient-to-b from-gray-600 to-gray-700 border border-gray-500 rounded-sm flex items-center justify-center">
-                    <span className="text-[8px] text-white">VIP</span>
-                  </div>
-                  <span className="text-gray-600 text-sm">VIP</span>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Right Sidebar */}
