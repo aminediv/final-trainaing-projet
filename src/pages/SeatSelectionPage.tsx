@@ -240,18 +240,24 @@ export default function SeatSelectionPage() {
               <div className="flex items-center gap-4 ml-auto">
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 bg-gray-400 border border-gray-500 rounded-sm" />
-                  <span className="text-gray-600 text-xs">Available</span>
+                  <span className="text-gray-600 text-xs">Regular</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 bg-gradient-to-b from-gray-600 to-gray-700 border border-gray-500 rounded-sm flex items-center justify-center">
+                    <span className="text-[6px] text-white font-bold">V</span>
+                  </div>
+                  <span className="text-gray-600 text-xs">VIP</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-4 bg-gradient-to-b from-gray-700 to-gray-800 border border-gray-600 rounded-lg" />
+                  <span className="text-gray-600 text-xs">Love Box</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 bg-gray-300 border border-gray-400 rounded-sm opacity-50" />
-                  <span className="text-gray-600 text-xs">Booked</span>
+                  <span className="text-gray-600 text-xs">Occupied</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-gray-200 border border-gray-300 rounded-sm" />
-                  <span className="text-gray-600 text-xs">Sold out</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-blue-500 border border-blue-600 rounded-sm" />
+                  <div className="w-4 h-4 bg-blue-500 border border-blue-600 rounded-sm shadow-lg shadow-blue-500/30" />
                   <span className="text-gray-600 text-xs">Selected</span>
                 </div>
               </div>
