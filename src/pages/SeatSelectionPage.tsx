@@ -160,7 +160,7 @@ export default function SeatSelectionPage() {
   };
   return <div className="min-h-screen bg-white">
       {/* Hero Movie Header */}
-      <div className="relative h-48 sm:h-64 lg:h-80 overflow-hidden">
+      <div className="relative h-32 sm:h-64 lg:h-80 overflow-hidden">
         {/* Background Image with Gradient Overlay - Use backdrop for widescreen fit */}
         <div className="absolute inset-0" style={{
         backgroundImage: movieBackdrop || moviePoster ? `url(${movieBackdrop || moviePoster})` : 'none',
@@ -210,79 +210,77 @@ export default function SeatSelectionPage() {
         {/* Main Content */}
         <div className="flex-1 flex overflow-hidden">
           {/* Left Side - Seat Selection */}
-          <div className="flex-1 overflow-y-auto p-4 sm:p-8 pb-32 lg:pb-8">
+          <div className="flex-1 overflow-y-auto p-3 sm:p-8 pb-36 lg:pb-8">
             {/* Movie Info */}
-            <div className="mb-6">
-              <div className="flex flex-wrap items-center gap-4 mb-2">
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{movieTitle}</h1>
+            <div className="mb-4 sm:mb-6">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-2">
+                <h1 className="text-xl sm:text-3xl font-bold text-gray-900">{movieTitle}</h1>
                 <span className="px-2 py-1 bg-yellow-400 text-yellow-900 text-xs font-bold rounded">IMDb {movieRating}</span>
-                <span className="text-gray-500 text-sm">⏱ {movieDuration}</span>
+                <span className="text-gray-500 text-xs sm:text-sm">⏱ {movieDuration}</span>
               </div>
-              <p className="text-gray-500 text-sm max-w-xl">{movieDescription}</p>
+              <p className="text-gray-500 text-xs sm:text-sm max-w-xl line-clamp-2 sm:line-clamp-none">{movieDescription}</p>
             </div>
             
             {/* Show Info */}
-            <div className="flex flex-wrap items-center gap-8 mb-6 text-sm">
+            <div className="flex flex-wrap items-start gap-4 sm:gap-8 mb-4 sm:mb-6 text-sm">
               <div>
-                <p className="text-gray-400">Theatre</p>
-                <p className="font-semibold text-gray-800">{theatreName}</p>
+                <p className="text-gray-400 text-xs sm:text-sm">Theatre</p>
+                <p className="font-semibold text-gray-800 text-sm sm:text-base">{theatreName}</p>
               </div>
               <div>
-                <p className="text-gray-400">Date</p>
-                <p className="font-semibold text-gray-800">{date}</p>
+                <p className="text-gray-400 text-xs sm:text-sm">Date</p>
+                <p className="font-semibold text-gray-800 text-sm sm:text-base">{date}</p>
               </div>
               <div>
-                <p className="text-gray-400">Show time</p>
-                <p className="font-semibold text-gray-800">{showtime}</p>
+                <p className="text-gray-400 text-xs sm:text-sm">Show time</p>
+                <p className="font-semibold text-gray-800 text-sm sm:text-base">{showtime}</p>
               </div>
               
               {/* Legend */}
-              <div className="flex items-center gap-4 ml-auto">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-gray-400 border border-gray-500 rounded-sm" />
-                  <span className="text-gray-600 text-xs">Regular</span>
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2 w-full lg:w-auto lg:ml-auto">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3.5 h-3.5 bg-gray-400 border border-gray-500 rounded-sm" />
+                  <span className="text-gray-600 text-[11px] sm:text-xs">Regular</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-gradient-to-b from-gray-600 to-gray-700 border border-gray-500 rounded-sm flex items-center justify-center">
-                    <span className="text-[6px] text-white font-bold">V</span>
-                  </div>
-                  <span className="text-gray-600 text-xs">VIP</span>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3.5 h-3.5 bg-gradient-to-b from-gray-600 to-gray-700 border border-gray-500 rounded-sm" />
+                  <span className="text-gray-600 text-[11px] sm:text-xs">VIP</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-4 bg-gradient-to-b from-gray-700 to-gray-800 border border-gray-600 rounded-lg" />
-                  <span className="text-gray-600 text-xs">Love Box</span>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-4 h-3.5 bg-gradient-to-b from-gray-700 to-gray-800 border border-gray-600 rounded-md" />
+                  <span className="text-gray-600 text-[11px] sm:text-xs">Love Box</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-gray-300 border border-gray-400 rounded-sm opacity-50" />
-                  <span className="text-gray-600 text-xs">Occupied</span>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3.5 h-3.5 bg-gray-300 border border-gray-400 rounded-sm opacity-50" />
+                  <span className="text-gray-600 text-[11px] sm:text-xs">Occupied</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-blue-500 border border-blue-600 rounded-sm shadow-lg shadow-blue-500/30" />
-                  <span className="text-gray-600 text-xs">Selected</span>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3.5 h-3.5 bg-blue-500 border border-blue-600 rounded-sm shadow shadow-blue-500/30" />
+                  <span className="text-gray-600 text-[11px] sm:text-xs">Selected</span>
                 </div>
               </div>
             </div>
 
             {/* Screen */}
-            <div className="relative mb-8">
+            <div className="relative mb-6 sm:mb-8">
               <svg viewBox="0 0 400 30" className="w-full max-w-2xl mx-auto">
                 <path d="M 10 25 Q 200 0 390 25" fill="none" stroke="#ef4444" strokeWidth="3" strokeLinecap="round" />
               </svg>
-              <p className="text-center text-gray-400 text-sm tracking-[0.3em] mt-2">SCREEN</p>
+              <p className="text-center text-gray-400 text-xs sm:text-sm tracking-[0.3em] mt-2">SCREEN</p>
             </div>
 
             {/* Seats Grid */}
-            <div className="flex flex-col items-center gap-1 mb-8 overflow-x-auto">
+            <div className="flex flex-col items-center gap-1 mb-8 overflow-x-auto -mx-3 px-3 sm:mx-0 sm:px-0">
               {seats.map((row, rowIndex) => <div key={rowIndex} className="flex items-center gap-1 min-w-max">
-                  <span className="w-6 text-center text-gray-400 text-sm font-medium">
+                  <span className="w-4 sm:w-6 text-center text-gray-400 text-[10px] sm:text-sm font-medium">
                     {row[0]?.row}
                   </span>
                   
                   <div className="flex gap-0.5">
                     {row.map((seat, seatIndex) => {
                   const hasGapBefore = seatIndex === Math.floor(row.length / 2);
-                  return <div key={seat.id} className={`flex ${hasGapBefore ? 'ml-4' : ''}`}>
-                          <motion.button onClick={() => handleSeatClick(seat)} disabled={seat.status === 'occupied'} className={`w-5 h-5 sm:w-6 sm:h-6 rounded-sm border text-[8px] font-medium transition-all ${getSeatStyle(seat)}`} whileHover={seat.status !== 'occupied' ? {
+                  return <div key={seat.id} className={`flex ${hasGapBefore ? 'ml-2 sm:ml-4' : ''}`}>
+                          <motion.button onClick={() => handleSeatClick(seat)} disabled={seat.status === 'occupied'} className={`w-4 h-4 sm:w-6 sm:h-6 rounded-sm border text-[8px] font-medium transition-all ${getSeatStyle(seat)}`} whileHover={seat.status !== 'occupied' ? {
                       scale: 1.1
                     } : {}} whileTap={seat.status !== 'occupied' ? {
                       scale: 0.95
@@ -291,7 +289,7 @@ export default function SeatSelectionPage() {
                 })}
                   </div>
                   
-                  <span className="w-6 text-center text-gray-400 text-sm font-medium">
+                  <span className="w-4 sm:w-6 text-center text-gray-400 text-[10px] sm:text-sm font-medium">
                     {row[0]?.row}
                   </span>
                 </div>)}
