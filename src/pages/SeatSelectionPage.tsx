@@ -160,7 +160,7 @@ export default function SeatSelectionPage() {
   };
   return <div className="min-h-screen bg-white">
       {/* Hero Movie Header */}
-      <div className="relative h-48 sm:h-64 lg:h-80 overflow-hidden">
+      <div className="relative h-32 sm:h-64 lg:h-80 overflow-hidden">
         {/* Background Image with Gradient Overlay - Use backdrop for widescreen fit */}
         <div className="absolute inset-0" style={{
         backgroundImage: movieBackdrop || moviePoster ? `url(${movieBackdrop || moviePoster})` : 'none',
